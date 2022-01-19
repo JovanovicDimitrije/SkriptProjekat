@@ -1,6 +1,13 @@
 function init() {
     
-    fetch('http://127.0.0.1:8000/admin/autori')
+    const cookies = document.cookie.split('=');
+    const token = cookies[cookies.length - 1];
+
+    fetch('http://127.0.0.1:8000/admin/autori',{
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then( res => res.json() )
         .then( data => {
             const lst = document.getElementById('autoriLst');
@@ -17,11 +24,12 @@ function init() {
                 AUTOR: document.getElementById('ime').value
             };
     
-            document.getElementById('ime').value = '';
-    
             fetch('http://127.0.0.1:8000/admin/dodajautora', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(data)
             })
                 .then( res => res.json() )

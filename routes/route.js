@@ -1,10 +1,29 @@
 const { sequelize, korisnici, knjige, komentari, autori } = require('../models');
 const express = require('express');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const bcrypt = require('bcrypt');
 
 const route = express.Router();
 route.use(express.json());
 route.use(express.urlencoded({ extended: true }));
 
+function authToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+  
+    if (token == null) return res.status(401).json({ msg: err });
+  
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    
+        if (err) return res.status(403).json({ msg: err });
+    
+        req.user = user;
+        next();
+    });
+}
+
+route.use(authToken);
 
 route.get('/autori', (req, res) => {
 
@@ -31,10 +50,20 @@ route.get('/komentari', (req, res) => {
 });
 
 route.get('/korisnici', (req, res) => {
-
-    korisnici.findAll()
-        .then( rows => res.json(rows) )
-        .catch( err => res.status(500).json(err) );
+    console.log(req.user);
+    korisnici.findOne({ where: { ID: req.user.userId } })
+    .then( usr => {
+        console.log(usr);
+        if (usr.ADMIN) {
+            korisnici.findAll()
+            .then( rows => res.json(rows) )
+            .catch( err => res.status(500).json(err) );
+        } else {
+            res.status(403).json({ msg: "User is not admin!"});
+        }
+    })
+    .catch( err => res.status(500).json(err) );
+    
     
 });
 
@@ -63,14 +92,18 @@ route.post('/dodajkomentar', (req, res) => {
 });
 
 route.post('/dodajkorisnika', (req, res) => {
-    console.log(req.body);
-    korisnici.create({ IME: req.body.IME, EMAIL: req.body.EMAIL, PASSWORD: req.body.PASSWORD })
-        .then( rows => res.json(rows) )
+    korisnici.findOne({ where: { ID: req.user.userId } })
+        .then( usr => {
+            if (usr.ADMIN) {
+                korisnici.create({ IME: req.body.IME, EMAIL: req.body.EMAIL, PASSWORD: bcrypt.hashSync(req.body.PASSWORD, 10), ADMIN: req.body.ADMIN })
+                .then( rows => res.json(rows) )
+                .catch( err => res.status(500).json({ msg: "User already exists!"}) );
+            } else {
+                res.status(403).json({ msg: "User is not admin!"});
+            }
+        })
         .catch( err => res.status(500).json(err) );
-
 });
-
-
 
 route.put('/autori/:id', (req, res) => {
     
@@ -166,14 +199,22 @@ route.delete('/komentari/:id', (req, res) => {
 });
 
 route.delete('/korisnici/:id', (req, res) => {
-
-    korisnici.findOne({ where: { ID: req.params.id } })
+    korisnici.findOne({ where: { ID: req.user.userId } })
         .then( usr => {
-            usr.destroy()
-                .then( rows => res.json(rows) )
-                .catch( err => res.status(500).json(err) );
+            if (usr.ADMIN) {
+                korisnici.findOne({ where: { ID: req.params.id } })
+                 .then( usr => {
+                    usr.destroy()
+                        .then( rows => res.json(rows) )
+                        .catch( err => res.status(500).json(err) );
         })
         .catch( err => res.status(500).json(err) );
+            } else {
+                res.status(403).json({ msg: "User is not admin!"});
+            }
+        })
+        .catch( err => res.status(500).json(err) );
+    
 });
 
 module.exports = route;

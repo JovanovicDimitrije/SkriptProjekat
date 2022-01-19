@@ -1,6 +1,13 @@
 function init() {
     
-    fetch('http://127.0.0.1:8000/admin/komentari')
+    const cookies = document.cookie.split('=');
+    const token = cookies[cookies.length - 1];
+
+    fetch('http://127.0.0.1:8000/admin/komentari',{
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then( res => res.json() )
         .then( data => {
             const lst = document.getElementById('komentariLst');
@@ -25,7 +32,10 @@ function init() {
     
             fetch('http://127.0.0.1:8000/admin/dodajkomentar', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(data)
             })
                 .then( res => res.json() )

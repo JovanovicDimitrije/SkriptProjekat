@@ -1,10 +1,18 @@
 function init() {
-    
+        
+        const cookies = document.cookie.split('=');
+        const token = cookies[cookies.length - 1];
+
+        
+
         document.getElementById('knjigeBtn').addEventListener('click', e => {
             e.preventDefault();
     
             fetch('http://127.0.0.1:8000/knjige', {
                 method: 'GET',
+                headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 
             })
                 .then( el => {
@@ -17,6 +25,9 @@ function init() {
         
                 fetch('http://127.0.0.1:8000/autori', {
                     method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                     
                 })
                     .then( el => {
@@ -27,8 +38,11 @@ function init() {
         document.getElementById('korisniciBtn').addEventListener('click', e => {
                 e.preventDefault();
         
-                fetch('http://127.0.0.1:8000/korisnici', {
+                fetch('http://127.0.0.1:8000/admin/korisnici', {
                     method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                     
                 })
                     .then( el => {
@@ -41,6 +55,9 @@ function init() {
         
                 fetch('http://127.0.0.1:8000/komentari', {
                     method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                     
                 })
                     .then( el => {
