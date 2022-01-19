@@ -14,28 +14,69 @@ route.get('/autori', (req, res) => {
     
 });
 
-route.get('/users/:id', (req, res) => {
+route.get('/knjige', (req, res) => {
 
-    Users.findOne({ where: { id: req.params.id } })
+    knjige.findAll()
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+    
+});
+
+route.get('/komentari', (req, res) => {
+
+    komentari.findAll()
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+    
+});
+
+route.get('/korisnici', (req, res) => {
+
+    korisnici.findAll()
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+    
+});
+
+route.post('/dodajautora', (req, res) => {
+    
+    autori.create({ AUTOR: req.body.AUTOR })
         .then( rows => res.json(rows) )
         .catch( err => res.status(500).json(err) );
 
 });
 
-route.post('/users', (req, res) => {
+route.post('/dodajknjigu', (req, res) => {
     
-    Users.create({ name: req.body.name, email: req.body.email })
+    knjige.create({ IME: req.body.IME, ID_AUTOR: req.body.ID_AUTOR })
         .then( rows => res.json(rows) )
         .catch( err => res.status(500).json(err) );
 
 });
 
-route.put('/users/:id', (req, res) => {
+route.post('/dodajkomentar', (req, res) => {
     
-    Users.findOne({ where: { id: req.params.id } })
+    komentari.create({ ID_KNJIGA: req.body.ID_KNJIGA, ID_KORISNIK: req.body.ID_KORISNIK, KOMENTAR: req.body.KOMENTAR })
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+
+});
+
+route.post('/dodajkorisnika', (req, res) => {
+    console.log(req.body);
+    korisnici.create({ IME: req.body.IME, EMAIL: req.body.EMAIL, PASSWORD: req.body.PASSWORD })
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+
+});
+
+
+
+route.put('/autori/:id', (req, res) => {
+    
+    autori.findOne({ where: { ID: req.params.id } })
         .then( usr => {
-            usr.name = req.body.name;
-            usr.email = req.body.email;
+            usr.AUTOR = req.body.AUTOR;
 
             usr.save()
                 .then( rows => res.json(rows) )
@@ -45,9 +86,56 @@ route.put('/users/:id', (req, res) => {
 
 });
 
-route.delete('/users/:id', (req, res) => {
+route.put('/knjige/:id', (req, res) => {
+    
+    knjige.findOne({ where: { ID: req.params.id } })
+        .then( usr => {
+            usr.IME = req.body.IME;
+            usr.ID_AUTOR = req.body.ID_AUTOR;
 
-    Users.findOne({ where: { id: req.params.id } })
+            usr.save()
+                .then( rows => res.json(rows) )
+                .catch( err => res.status(500).json(err) );
+        })
+        .catch( err => res.status(500).json(err) );
+
+});
+
+route.put('/komentari/:id', (req, res) => {
+    
+    komentari.findOne({ where: { ID: req.params.id } })
+        .then( usr => {
+            usr.ID_KNIGA = req.body.ID_KNIGA;
+            usr.ID_KORISNIK = req.body.ID_KORISNIK;
+            usr.KOMENTAR = req.body.KOMENTAR;
+
+            usr.save()
+                .then( rows => res.json(rows) )
+                .catch( err => res.status(500).json(err) );
+        })
+        .catch( err => res.status(500).json(err) );
+
+});
+
+route.put('/korisnici/:id', (req, res) => {
+    
+    korisnici.findOne({ where: { ID: req.params.id } })
+        .then( usr => {
+            usr.IME = req.body.IME;
+            usr.EMAIL = req.body.EMAIL;
+            usr.PASSWORD = req.body.PASSWORD;
+
+            usr.save()
+                .then( rows => res.json(rows) )
+                .catch( err => res.status(500).json(err) );
+        })
+        .catch( err => res.status(500).json(err) );
+
+});
+
+route.delete('/autori/:id', (req, res) => {
+
+    autori.findOne({ where: { ID: req.params.id } })
         .then( usr => {
             usr.destroy()
                 .then( rows => res.json(rows) )
@@ -56,49 +144,32 @@ route.delete('/users/:id', (req, res) => {
         .catch( err => res.status(500).json(err) );
 });
 
-route.get('/messages', (req, res) => {
-
-    Messages.findAll({ include: ['user'] })
-        .then( rows => res.json(rows) )
-        .catch( err => res.status(500).json(err) );
-    
-});
-
-route.get('/messages/:id', (req, res) => {
-
-    Messages.findOne({ where: { id: req.params.id }, include: ['user'] })
-        .then( rows => res.json(rows) )
-        .catch( err => res.status(500).json(err) );
-
-});
-
-route.post('/messages', (req, res) => {
-
-    Messages.create({ body: req.body.body, userId: req.body.userId })
-        .then( rows => res.json(rows) )
-        .catch( err => res.status(500).json(err) );
-
-});
-
-route.put('/messages/:id', (req, res) => {
-    
-    Messages.findOne({ where: { id: req.params.id }, include: ['user'] })
-        .then( msg => {
-            msg.body = req.body.body;
-
-            msg.save()
+route.delete('/knjige/:id', (req, res) => {
+    knjige.findOne({ where: { ID: req.params.id } })
+        .then( usr => {
+            usr.destroy()
                 .then( rows => res.json(rows) )
                 .catch( err => res.status(500).json(err) );
         })
         .catch( err => res.status(500).json(err) );
-
 });
 
-route.delete('/messages/:id', (req, res) => {
+route.delete('/komentari/:id', (req, res) => {
 
-    Messages.findOne({ where: { id: req.params.id }, include: ['user'] })
-        .then( msg => {
-            msg.destroy()
+    komentari.findOne({ where: { ID: req.params.id } })
+        .then( usr => {
+            usr.destroy()
+                .then( rows => res.json(rows) )
+                .catch( err => res.status(500).json(err) );
+        })
+        .catch( err => res.status(500).json(err) );
+});
+
+route.delete('/korisnici/:id', (req, res) => {
+
+    korisnici.findOne({ where: { ID: req.params.id } })
+        .then( usr => {
+            usr.destroy()
                 .then( rows => res.json(rows) )
                 .catch( err => res.status(500).json(err) );
         })

@@ -1,66 +1,50 @@
 function init() {
     
-    fetch('http://127.0.0.1:8000/admin/autori')
-        .then( res => res.json() )
-        .then( data => {
-            const lst = document.getElementById('usrLst');
-
-            data.forEach( el => {
-                lst.innerHTML += `<li>ID: ${el.ID}, Name: ${el.AUTOR} </li>`;
-            });
-        });
-
-    fetch('http://192.168.0.143:8000/api/messages')
-        .then( res => res.json() )
-        .then( data => {
-            const lst = document.getElementById('msgLst');
-
-            data.forEach( el => {
-                lst.innerHTML += `<li>ID: ${el.id}, Body: ${el.body}, User: ${el.user.name}</li>`;
-            });
-        });
+        document.getElementById('knjigeBtn').addEventListener('click', e => {
+            e.preventDefault();
     
-    document.getElementById('usrBtn').addEventListener('click', e => {
-        e.preventDefault();
+            fetch('http://127.0.0.1:8000/knjige', {
+                method: 'GET',
+                
+            })
+                .then( el => {
+                        window.location.href = 'knjige.html';  
+                });
+        });
 
-        const data = {
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value
-        };
-
-        document.getElementById('name').value = '';
-        document.getElementById('email').value = '';
-
-        fetch('http://192.168.0.143:8000/api/users', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-            .then( res => res.json() )
-            .then( data => {
-                document.getElementById('usrLst').innerHTML += `<li>ID: ${data.id}, Name: ${data.name}, E-mail: ${data.email}</li>`;
-            });
-    });
-
-    document.getElementById('msgBtn').addEventListener('click', e => {
-        e.preventDefault();
+        document.getElementById('autoriBtn').addEventListener('click', e => {
+                e.preventDefault();
         
-        const data = {
-            body: document.getElementById('body').value,
-            userId: document.getElementById('userId').value
-        };
+                fetch('http://127.0.0.1:8000/autori', {
+                    method: 'GET',
+                    
+                })
+                    .then( el => {
+                            window.location.href = 'autori.html';  
+                    });
+        });
 
-        document.getElementById('body').value = '';
-        document.getElementById('userId').value = '';
+        document.getElementById('korisniciBtn').addEventListener('click', e => {
+                e.preventDefault();
+        
+                fetch('http://127.0.0.1:8000/korisnici', {
+                    method: 'GET',
+                    
+                })
+                    .then( el => {
+                            window.location.href = 'korisnici.html';  
+                    });
+        });
 
-        fetch('http://192.168.0.143:8000/api/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-            .then( res => res.json() )
-            .then( data => {
-                document.getElementById('msgLst').innerHTML += `<li>ID: ${data.id}, Body: ${data.body}</li>`;
-            });
-    });
+        document.getElementById('komentariBtn').addEventListener('click', e => {
+                e.preventDefault();
+        
+                fetch('http://127.0.0.1:8000/komentari', {
+                    method: 'GET',
+                    
+                })
+                    .then( el => {
+                            window.location.href = 'komentari.html';  
+                    });
+        });
 }
