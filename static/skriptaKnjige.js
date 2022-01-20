@@ -12,7 +12,8 @@ function init() {
             const lst = document.getElementById('knjigeLst');
 
             data.forEach( el => {
-                lst.innerHTML += `<li>ID: ${el.ID}, Ime knjige: ${el.IME}, ID autora: ${el.ID_AUTOR} <button type="button" onclick="deleteKnjiga(${el.ID})" id="delete${el.id}"> Izbrisi </button> </li>`;
+                lst.innerHTML += `<li>ID: ${el.ID}, Ime knjige: ${el.IME}, ID autora: ${el.ID_AUTOR} <button type="button" onclick="deleteKnjiga(${el.ID})" id="delete${el.id}"> Izbrisi </button> 
+                <button type="button" onclick="editKnjiga(${el.ID},'${el.IME}')" id="edit${el.id}"> Izmeni </button> </li>`;
             });
         });
 
@@ -37,10 +38,37 @@ function init() {
             })
                 .then( res => res.json() )
                 .then( data => {
-                    document.getElementById('knjigeLst').innerHTML += `<li>ID: ${data.ID}, Ime knjige: ${data.IME}, ID autora: ${data.ID_AUTOR} <button> Izbrisi </button> </li>`;
+                    document.getElementById('knjigeLst').innerHTML += `<li>ID: ${data.ID}, Ime knjige: ${data.IME}, ID autora: ${data.ID_AUTOR} <button> Izbrisi </button> 
+                    <button type="button" onclick="editKnjiga(${data.ID},'${data.IME}')" id="edit${data.id}"> Izmeni </button></li>`;
                     location.reload();
                 });
         });
     
+        document.getElementById('EditknjigaBtn').addEventListener('click', e => {
+            e.preventDefault();
+    
+            const id= document.getElementById('Editid').value;
+
+            const data = {
+                IME: document.getElementById('Editime').value,
+            };
+    
+    
+            fetch('http://127.0.0.1:8000/admin/knjige/'+id, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then( res => res.json() )
+                .then( data => {
+                    document.getElementById('knjigeLst').innerHTML += `<li>ID: ${data.ID}, Ime knjige: ${data.IME}, ID autora: ${data.ID_AUTOR} <button> Izbrisi </button> 
+                    <button type="button" onclick="editKnjiga(${data.ID},'${data.IME}')" id="edit${data.id}"> Izmeni </button></li>`;
+                    location.reload();
+                });
+        });
+
         
 }

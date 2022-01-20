@@ -23,7 +23,14 @@
              },
             });
             location.reload();
+        };
+        function editKorisnika(ID,IME,EMAIL){
+            document.getElementById('Editime').value=IME;
+            document.getElementById('Editemail').value=EMAIL;
+            document.getElementById('EditID').value=ID;
+
         }
+
         </script>
     </head>
     <body onload="init()">
@@ -57,5 +64,24 @@
             </div>
         </div>
         <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <form method="post" action="/dodajkorisnika">
+                        <div class="mb-3">
+                            <label for="ime" class="form-label">Ime korisnika</label>
+                            <input type="text" class="form-control" id="Editime">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="Editemail">
+                            <input type="number" class="form-control" id="EditID" hidden>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="EditkorisnikBtn">Izmeni korisnika</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </body>
 </html>

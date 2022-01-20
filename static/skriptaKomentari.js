@@ -13,7 +13,8 @@ function init() {
             const lst = document.getElementById('komentariLst');
 
             data.forEach( el => {
-                lst.innerHTML += `<li>ID: ${el.ID}, ID knjige: ${el.ID_KNJIGA}, ID korisnika: ${el.ID_KORISNIK}, Komentar: ${el.KOMENTAR} <button type="button" onclick="deleteKomentar(${el.ID})" id="delete${el.id}"> Izbrisi </button> </li>`;
+                lst.innerHTML += `<li>ID: ${el.ID}, ID knjige: ${el.ID_KNJIGA}, ID korisnika: ${el.ID_KORISNIK}, Komentar: ${el.KOMENTAR} <button type="button" onclick="deleteKomentar(${el.ID})" id="delete${el.id}"> Izbrisi </button> 
+                <button type="button" onclick="editKomentar(${el.ID},'${el.KOMENTAR}')" id="edit${el.id}"> Izmeni </button></li>`;
             });
         });
 
@@ -40,7 +41,31 @@ function init() {
             })
                 .then( res => res.json() )
                 .then( data => {
-                    document.getElementById('komentariLst').innerHTML += `<li>ID: ${data.ID}, ID knjige: ${data.ID_KNJIGA}, ID korisnika: ${data.ID_KORISNIK}, Komentar: ${data.KOMENTAR} <button> Izbrisi </button> </li>`;
+                    document.getElementById('komentariLst').innerHTML += `<li>ID: ${data.ID}, ID knjige: ${data.ID_KNJIGA}, ID korisnika: ${data.ID_KORISNIK}, Komentar: ${data.KOMENTAR} <button> Izbrisi </button>
+                    <button type="button" onclick="editKomentar(${data.ID},'${data.KOMENTAR}')" id="edit${data.id}"> Izmeni </button> </li>`;
+                    location.reload();
+                });
+        });
+
+        document.getElementById('EditkomentarBtn').addEventListener('click', e => {
+            e.preventDefault();
+            const id= document.getElementById('EditID').value;
+            const data = {
+                KOMENTAR: document.getElementById('Editkomentar').value
+            };
+    
+            fetch('http://127.0.0.1:8000/admin/komentari/'+id, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then( res => res.json() )
+                .then( data => {
+                    document.getElementById('komentariLst').innerHTML += `<li>ID: ${data.ID}, ID knjige: ${data.ID_KNJIGA}, ID korisnika: ${data.ID_KORISNIK}, Komentar: ${data.KOMENTAR} <button> Izbrisi </button>
+                    <button type="button" onclick="editKomentar(${data.ID},'${data.KOMENTAR}')" id="edit${data.id}"> Izmeni </button> </li>`;
                     location.reload();
                 });
         });

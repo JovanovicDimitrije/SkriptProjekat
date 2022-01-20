@@ -22,6 +22,12 @@
                 },
             });
             location.reload();
+        };
+        </script>
+        <script>   
+        function editAutora(id,autor){
+            document.getElementById('imeedit').value=autor;
+            document.getElementById('idHidden').value=id;
         }
         </script>
     </head>
@@ -44,5 +50,18 @@
             </div>
         </div>
         <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+        <form method="post" action="/editautora">
+            <div class="mb-3">
+                <label for="ime" class="form-label">Ime autora</label>
+                <input type="text" class="form-control" id="imeedit">
+                <input type="number" class="form-control" id="idHidden" hidden>
+            </div>
+            <button type="submit" class="btn btn-primary" id="autorBtnEdit">Izmeni autora</button>
+        </div>
+            </div>
+        </div>
     </body>
 </html>

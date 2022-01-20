@@ -22,7 +22,12 @@
              }
             });
             location.reload();
+        };
+        function editKnjiga(id,IME){
+        document.getElementById('Editime').value=IME;
+        document.getElementById('Editid').value=id;
         }
+
         </script>
     </head>
     <body onload="init()">
@@ -48,5 +53,23 @@
             </div>
         </div>
         <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <form method="post" action="/editknjigu">
+                        <div class="mb-3">
+                            <label for="ime" class="form-label">Ime knjige</label>
+                            <input type="text" class="form-control" id="Editime">
+                            <input type="text" class="form-control" id="Editid" hidden>
+                        </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="EditknjigaBtn">Izmeni knjigu</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
     </body>
 </html>

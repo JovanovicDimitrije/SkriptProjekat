@@ -124,7 +124,6 @@ route.put('/knjige/:id', (req, res) => {
     knjige.findOne({ where: { ID: req.params.id } })
         .then( usr => {
             usr.IME = req.body.IME;
-            usr.ID_AUTOR = req.body.ID_AUTOR;
 
             usr.save()
                 .then( rows => res.json(rows) )
@@ -138,8 +137,6 @@ route.put('/komentari/:id', (req, res) => {
     
     komentari.findOne({ where: { ID: req.params.id } })
         .then( usr => {
-            usr.ID_KNIGA = req.body.ID_KNIGA;
-            usr.ID_KORISNIK = req.body.ID_KORISNIK;
             usr.KOMENTAR = req.body.KOMENTAR;
 
             usr.save()
@@ -156,7 +153,6 @@ route.put('/korisnici/:id', (req, res) => {
         .then( usr => {
             usr.IME = req.body.IME;
             usr.EMAIL = req.body.EMAIL;
-            usr.PASSWORD = req.body.PASSWORD;
 
             usr.save()
                 .then( rows => res.json(rows) )
